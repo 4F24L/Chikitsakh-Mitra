@@ -1,17 +1,31 @@
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from 'react-router-dom';
+import { auth } from '../firebase';
+import { signOut } from 'firebase/auth';
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
+  const { currentUser } = useAuth();
+
+  const signUserOut = async () => {
+    try {
+      await signOut(auth);
+      alert("Logged out successfully!")
+    } catch (err) {
+      alert(err.message);
+    }
+  };
+
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white bg-opacity-95 backdrop-blur-sm shadow-sm">
       <nav className="container mx-auto px-12 py-4 flex items-center justify-between">
         {/* Logo */}
-        <p onClick={()=>{
-            navigate('/');
+        <p onClick={() => {
+          navigate('/');
         }} className="text-xl font-bold text-[#33C3F0] cursor-pointer">
           Chikitsah<span className="text-[#1EAEDB]">Mitra</span>
         </p>
@@ -38,20 +52,37 @@ const NavBar = () => {
               Testimonials
             </a>
           </li>
-          <li>
-            <button onClick={()=>{
-                navigate('/login')
-            }} className="border border-[#33C3F0] px-4 py-2 rounded-md font-medium text-[#33C3F0] hover:bg-[#33C3F0] hover:text-white transition cursor-pointer">
-              Sign In
-            </button>
-          </li>
-          <li>
-            <button onClick={()=>{
-                navigate('/signup')
-            }} className="bg-[#33C3F0] px-4 py-2 rounded-md font-medium text-white hover:bg-[#1EAEDB] cursor-pointer">
-              Get Started
-            </button>
-          </li>
+          {!currentUser ?
+            <>
+              <li>
+                <button onClick={() => {
+                  navigate('/login')
+                }} className="border border-[#33C3F0] px-4 py-2 rounded-md font-medium text-[#33C3F0] hover:bg-[#33C3F0] hover:text-white transition cursor-pointer">
+                  Sign In
+                </button>
+              </li>
+              <li>
+                <button onClick={() => {
+                  navigate('/signup')
+                }} className="bg-[#33C3F0] px-4 py-2 rounded-md font-medium text-white hover:bg-[#1EAEDB] cursor-pointer">
+                  Get Started
+                </button>
+              </li> </> :
+            <>
+              <li>
+                <button onClick={() => {
+                  navigate('/dashboard')
+                }} className="border border-[#33C3F0] px-4 py-2 rounded-md font-medium text-[#33C3F0] hover:bg-[#33C3F0] hover:text-white transition cursor-pointer">
+                  Dashboard
+                </button>
+              </li>
+              <li>
+                <button onClick={signUserOut} className="border bg-red-400 px-4 py-2 rounded-md font-medium text-white hover:bg-red-600 transition cursor-pointer">
+                  Logout
+                </button>
+              </li>
+
+            </>}
         </ul>
       </nav>
 

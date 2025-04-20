@@ -1,5 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { auth } from "../firebase";
 
 const SignUp = () => {
   const [name, setName] = useState('');
@@ -7,15 +9,36 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
 
-    const formData = { name, email, password };
-    console.log('Sign up data:', formData);
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters long.");
+      setIsLoading(false);
+      return;
+    }
 
-    setTimeout(() => setIsLoading(false), 1000);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const user = userCredential.user;
+      await updateProfile(user, {
+        displayName: name,
+      })
+      setIsLoading(false);
+      navigate("/");
+    } catch (err) {
+      setLoading(false);
+      alert(err);
+    }
   };
+
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-[#f9fafb]">

@@ -1,6 +1,8 @@
 import { FileText, Shield, Activity } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const Hero = () => {
+const Hero = () => { 
+  const navigate = useNavigate()
   return (
     <section className="pt-28 pb-16 md:pt-32 md:pb-24 bg-gradient-to-b from-white to-gray-100">
       <div className="container mx-auto px-12 grid lg:grid-cols-2 gap-10 items-center">
@@ -20,7 +22,9 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 mt-6">
-            <button className="px-6 py-3 bg-[#33C3F0] hover:bg-[#1EAEDB] cursor-pointer text-white text-sm font-medium rounded-md transition">
+            <button onClick={()=>{
+              navigate('/upload')
+            }} className="px-6 py-3 bg-[#33C3F0] hover:bg-[#1EAEDB] cursor-pointer text-white text-sm font-medium rounded-md transition">
               Upload Report
             </button>
             <button className="px-6 py-3 border border-[#33C3F0] text-[#33C3F0] cursor-pointer hover:bg-blue-100 text-sm font-medium rounded-md transition">
